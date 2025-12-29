@@ -79,21 +79,26 @@ export default function Chat() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <Link to="/" className={styles.backButton}>
-            <ArrowLeft className={styles.backIcon} />
-            Home
-          </Link>
-          <h1 className={styles.title}>CalmChat AI</h1>
+      <nav className={styles.navbar}>
+        <div className={styles.navContainer}>
+          <div className={styles.navBrand}>
+            <Sparkles className={styles.navLogo} />
+            <span className={styles.navTitle}>CalmChat AI</span>
+          </div>
+          <div className={styles.navLinks}>
+            <Link to="/" className={styles.navLink}>
+              <ArrowLeft className={styles.navIcon} />
+              Home
+            </Link>
+            {messages.length > 0 && (
+              <button onClick={handleNewChat} className={styles.newChatButton}>
+                <RefreshCw className={styles.newChatIcon} />
+                New Chat
+              </button>
+            )}
+          </div>
         </div>
-        {messages.length > 0 && (
-          <button onClick={handleNewChat} className={styles.newChatButton}>
-            <RefreshCw className={styles.newChatIcon} />
-            New Chat
-          </button>
-        )}
-      </header>
+      </nav>
 
       <div className={styles.chatArea}>
         <div className={styles.messagesContainer}>
