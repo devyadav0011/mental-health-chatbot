@@ -212,34 +212,69 @@
 
 /* Footer */
 .footer {
-  background: var(--color-neutral-2);
-  border-top: 1px solid var(--color-neutral-4);
-  padding: var(--space-5) var(--space-5);
+  background: linear-gradient(135deg, var(--indigo-2) 0%, var(--purple-2) 50%, var(--pink-2) 100%);
+  border-top: 2px solid var(--indigo-5);
+  padding: var(--space-7) var(--space-5);
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  animation: var(--animation-spin) 30s linear infinite;
 }
 
 .footerContent {
   max-width: 900px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .footerText {
-  font-size: var(--font-size-1);
-  color: var(--color-neutral-10);
+  font-size: var(--font-size-2);
+  background: linear-gradient(90deg, var(--violet-11), var(--purple-11), var(--pink-11));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.8;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+  display: inline-block;
+  transform-style: preserve-3d;
+  transition: transform 0.3s var(--ease-out);
+}
+
+.footerText:hover {
+  transform: translateZ(10px) scale(1.05);
 }
 
 .footerLink {
-  color: var(--color-accent-9);
+  color: var(--indigo-9);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s var(--ease-out);
+  font-weight: 700;
+  transition: all 0.3s var(--ease-out);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-2);
+  background: var(--indigo-3);
+  display: inline-block;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  transform: translateZ(0);
 }
 
 .footerLink:hover {
-  color: var(--color-accent-10);
-  text-decoration: underline;
+  color: var(--purple-10);
+  background: var(--indigo-4);
+  transform: translateY(-2px) translateZ(5px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
 }
 
 @media (max-width: 768px) {
