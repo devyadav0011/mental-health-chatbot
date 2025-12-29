@@ -31,6 +31,14 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Ad Placement - Top Banner */}
+      <section className={styles.adSection}>
+        <div className={styles.adBanner}>
+          <span className={styles.adLabel}>Advertisement</span>
+          <p className={styles.adPlaceholder}>Ad Space Available</p>
+        </div>
+      </section>
+
       <section className={styles.about}>
         <div className={styles.aboutContent}>
           <h2 className={styles.aboutTitle}>How CalmChat AI Can Help You</h2>
@@ -61,6 +69,32 @@ export default function Home() {
                 convenience.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ad Placement - Bottom Banner */}
+      <section className={styles.adSection}>
+        <div className={styles.adBanner}>
+          <span className={styles.adLabel}>Advertisement</span>
+          <p className={styles.adPlaceholder}>Ad Space Available</p>
+        </div>
+      </section>
+
+      {/* Ad Placement - Sidebar/Card Ads */}
+      <section className={styles.adCardsSection}>
+        <div className={styles.adCardsContainer}>
+          <div className={styles.adCard}>
+            <span className={styles.adLabel}>Sponsored</span>
+            <p className={styles.adPlaceholder}>Ad Space</p>
+          </div>
+          <div className={styles.adCard}>
+            <span className={styles.adLabel}>Sponsored</span>
+            <p className={styles.adPlaceholder}>Ad Space</p>
+          </div>
+          <div className={styles.adCard}>
+            <span className={styles.adLabel}>Sponsored</span>
+            <p className={styles.adPlaceholder}>Ad Space</p>
           </div>
         </div>
       </section>
