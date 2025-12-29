@@ -98,6 +98,15 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <p className={styles.footerText}>
+            Created by Dev😊 | Contact: <a href="mailto:devy19372@gmail.com" className={styles.footerLink}>devy19372@gmail.com</a>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
