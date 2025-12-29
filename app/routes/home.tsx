@@ -32,12 +32,7 @@ export default function Home() {
       </section>
 
       {/* Ad Placement - Top Banner */}
-      <section className={styles.adSection}>
-        <div className={styles.adBanner}>
-          <span className={styles.adLabel}>Advertisement</span>
-          <p className={styles.adPlaceholder}>Ad Space Available</p>
-        </div>
-      </section>
+      <section className={styles.adSection}></section>
 
       <section className={styles.about}>
         <div className={styles.aboutContent}>
@@ -88,14 +83,6 @@ export default function Home() {
             <span className={styles.adLabel}>Sponsored</span>
             <p className={styles.adPlaceholder}>Ad Space</p>
           </div>
-          <div className={styles.adCard}>
-            <span className={styles.adLabel}>Sponsored</span>
-            <p className={styles.adPlaceholder}>Ad Space</p>
-          </div>
-          <div className={styles.adCard}>
-            <span className={styles.adLabel}>Sponsored</span>
-            <p className={styles.adPlaceholder}>Ad Space</p>
-          </div>
         </div>
       </section>
 
@@ -103,7 +90,11 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <p className={styles.footerText}>
-            ✨ Created by Dev 😊 ✨ | 💌 Contact: <a href="mailto:devy19372@gmail.com" className={styles.footerLink}>devy19372@gmail.com</a> 💌
+            ✨ Created by Dev 😊 ✨ | 💌 Contact:{" "}
+            <a href="mailto:devy19372@gmail.com" className={styles.footerLink}>
+              devy19372@gmail.com
+            </a>{" "}
+            💌
           </p>
         </div>
       </footer>
