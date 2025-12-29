@@ -1,9 +1,20 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router";
 import type { Route } from "./+types/chat";
 import { ArrowLeft, MessageCircle, Send, Sparkles, User, RefreshCw } from "lucide-react";
 import { generateAIResponse } from "~/data/mock-ai-responses";
 import styles from "./chat.module.css";
+
+const backgroundImages = [
+  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=900&fit=crop&q=80", // Mountain landscape
+  "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1600&h=900&fit=crop&q=80", // Ocean waves
+  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1600&h=900&fit=crop&q=80", // Forest path
+  "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1600&h=900&fit=crop&q=80", // Flower field
+  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=900&fit=crop&q=80", // Forest trees
+  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1600&h=900&fit=crop&q=80", // Sunset sky
+  "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=1600&h=900&fit=crop&q=80", // Lake reflection
+  "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1600&h=900&fit=crop&q=80", // Beach sunset
+];
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -28,6 +39,11 @@ export default function Chat() {
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Generate a random background image on component mount
+  const backgroundImage = useMemo(() => {
+    return backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -78,8 +94,9 @@ export default function Chat() {
   };
 
   return (
-    <div className={styles.container}>
-      <nav className={styles.navbar}>
+    <div className={styles.container} style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className={styles.overlay}></div>
+      <nav className={styles.navbar} style={{ position: 'relative', zIndex: 101 }}>
         <div className={styles.navContainer}>
           <div className={styles.navBrand}>
             <Sparkles className={styles.navLogo} />
@@ -100,7 +117,7 @@ export default function Chat() {
         </div>
       </nav>
 
-      <div className={styles.chatArea}>
+      <div className={styles.chatArea} style={{ position: 'relative', zIndex: 100 }}>
         <div className={styles.messagesContainer}>
           {messages.length === 0 ? (
             <div className={styles.emptyState}>
