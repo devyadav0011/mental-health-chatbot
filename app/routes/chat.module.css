@@ -88,6 +88,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  justify-content: space-between;
 }
 
 .backLink {
@@ -126,6 +127,30 @@
   width: 20px;
   height: 20px;
   color: var(--color-accent-9);
+}
+
+/* Emotion Indicator */
+.emotionIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-neutral-3);
+  border: 1px solid var(--color-neutral-5);
+  border-radius: var(--radius-3);
+  font-size: var(--font-size-1);
+  animation: var(--animation-fade-in) 0.3s var(--ease-out);
+}
+
+.emotionIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.emotionLabel {
+  font-weight: 500;
+  text-transform: capitalize;
+  color: var(--color-neutral-11);
 }
 
 /* Messages Area */
@@ -261,6 +286,22 @@
   font-size: var(--font-size-1);
   font-weight: 600;
   color: var(--color-neutral-11);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.emotionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-2);
+  font-size: var(--font-size-0);
+  font-weight: 500;
+  text-transform: capitalize;
+  animation: var(--animation-scale-up) 0.2s var(--ease-out);
 }
 
 .messageBody {
@@ -268,7 +309,15 @@
   line-height: 1.7;
   color: var(--color-neutral-12);
   word-wrap: break-word;
-  white-space: pre-wrap;
+}
+
+.messageParagraph {
+  margin: 0;
+  margin-bottom: var(--space-3);
+}
+
+.messageParagraph:last-child {
+  margin-bottom: 0;
 }
 
 /* Input Section */

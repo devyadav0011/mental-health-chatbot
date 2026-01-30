@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import type { Route } from "./+types/chat";
-import { ArrowLeft, Send, Sparkles, User, Plus, Mic, MicOff } from "lucide-react";
+import { ArrowLeft, Send, Sparkles, User, Plus, Mic, MicOff, Heart } from "lucide-react";
 import { generateAIResponse } from "~/data/mock-ai-responses";
 import { useSpeechRecognition } from "~/hooks/use-speech-recognition";
+import { useEmotionDetection, type EmotionAnalysis } from "~/hooks/use-emotion-detection";
+import { generateEmotionResponse, getEmotionColor, getEmotionEmoji } from "~/data/emotion-responses";
 import styles from "./chat.module.css";
 
 export function meta({}: Route.MetaArgs) {
@@ -21,14 +23,19 @@ interface Message {
   role: "user" | "ai";
   content: string;
   timestamp: Date;
+  emotion?: EmotionAnalysis;
 }
 
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [currentEmotion, setCurrentEmotion] = useState<EmotionAnalysis | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Emotion detection hook
+  const { detectEmotion } = useEmotionDetection();
 
   // Speech recognition hook
   const {
@@ -61,11 +68,18 @@ export default function Chat() {
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isProcessing) return;
 
+    const messageText = inputValue.trim();
+    
+    // Detect emotion from user message
+    const emotionAnalysis = detectEmotion(messageText);
+    setCurrentEmotion(emotionAnalysis);
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
-      content: inputValue.trim(),
+      content: messageText,
       timestamp: new Date(),
+      emotion: emotionAnalysis,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -74,16 +88,31 @@ export default function Chat() {
 
     // Simulate AI processing delay
     setTimeout(() => {
+      // Generate emotionally intelligent response
+      const emotionalResponse = generateEmotionResponse(
+        emotionAnalysis.primary,
+        emotionAnalysis.confidence,
+        messageText
+      );
+      
+      // Fallback to context-aware response for additional variety
+      const contextResponse = generateAIResponse(messageText);
+      
+      // Use emotion-based response for strong emotions, blend for neutral
+      const finalResponse = emotionAnalysis.confidence > 0.6 
+        ? emotionalResponse
+        : `${contextResponse}\n\n${emotionalResponse.split('\n\n')[0]}`;
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: "ai",
-        content: generateAIResponse(userMessage.content),
+        content: finalResponse,
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, aiResponse]);
       setIsProcessing(false);
-    }, 800);
+    }, 1000);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -96,6 +125,7 @@ export default function Chat() {
   const handleNewChat = () => {
     setMessages([]);
     setInputValue("");
+    setCurrentEmotion(null);
     resetTranscript();
   };
 
@@ -143,6 +173,12 @@ export default function Chat() {
               <Sparkles className={styles.titleIcon} />
               <span>CalmChat AI</span>
             </div>
+            {currentEmotion && currentEmotion.confidence > 0.6 && (
+              <div className={styles.emotionIndicator} title={`Detected emotion: ${currentEmotion.primary}`}>
+                <Heart className={styles.emotionIcon} style={{ color: getEmotionColor(currentEmotion.primary) }} />
+                <span className={styles.emotionLabel}>{getEmotionEmoji(currentEmotion.primary)} {currentEmotion.primary}</span>
+              </div>
+            )}
           </div>
         </header>
 
@@ -156,7 +192,9 @@ export default function Chat() {
                 </div>
                 <h2 className={styles.emptyTitle}>How can I help you today?</h2>
                 <p className={styles.emptyDescription}>
-                  I'm your AI companion for mental well-being support. Feel free to share what's on your mind.
+                  I'm your AI companion for mental well-being support with emotion awareness. 
+                  I can sense how you're feeling and provide personalized, empathetic responses. 
+                  Feel free to share what's on your mind - through text or voice.
                 </p>
               </div>
             ) : (
@@ -177,8 +215,17 @@ export default function Chat() {
                       <div className={styles.messageText}>
                         <div className={styles.messageLabel}>
                           {message.role === "user" ? "You" : "CalmChat"}
+                          {message.emotion && message.emotion.confidence > 0.5 && (
+                            <span className={styles.emotionBadge} style={{ backgroundColor: getEmotionColor(message.emotion.primary) + '20', color: getEmotionColor(message.emotion.primary) }}>
+                              {getEmotionEmoji(message.emotion.primary)} {message.emotion.primary}
+                            </span>
+                          )}
                         </div>
-                        <div className={styles.messageBody}>{message.content}</div>
+                        <div className={styles.messageBody}>
+                          {message.content.split('\n\n').map((paragraph, idx) => (
+                            <p key={idx} className={styles.messageParagraph}>{paragraph}</p>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
