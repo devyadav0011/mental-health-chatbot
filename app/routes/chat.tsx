@@ -1,21 +1,10 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import type { Route } from "./+types/chat";
-import { ArrowLeft, MessageCircle, Send, Sparkles, User, RefreshCw, Mic, MicOff } from "lucide-react";
+import { ArrowLeft, Send, Sparkles, User, Plus, Mic, MicOff } from "lucide-react";
 import { generateAIResponse } from "~/data/mock-ai-responses";
 import { useSpeechRecognition } from "~/hooks/use-speech-recognition";
 import styles from "./chat.module.css";
-
-const backgroundImages = [
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=900&fit=crop&q=80", // Mountain landscape
-  "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1600&h=900&fit=crop&q=80", // Ocean waves
-  "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1600&h=900&fit=crop&q=80", // Forest path
-  "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1600&h=900&fit=crop&q=80", // Flower field
-  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=900&fit=crop&q=80", // Forest trees
-  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=1600&h=900&fit=crop&q=80", // Sunset sky
-  "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=1600&h=900&fit=crop&q=80", // Lake reflection
-  "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1600&h=900&fit=crop&q=80", // Beach sunset
-];
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -60,11 +49,6 @@ export default function Chat() {
       console.error("Voice input error:", error);
     },
   });
-
-  // Generate a random background image on component mount
-  const backgroundImage = useMemo(() => {
-    return backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
-  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -132,104 +116,121 @@ export default function Chat() {
   }, [interimTranscript, isListening]);
 
   return (
-    <div className={styles.container} style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className={styles.overlay}></div>
-      <nav className={styles.navbar} style={{ position: 'relative', zIndex: 101 }}>
-        <div className={styles.navContainer}>
-          <div className={styles.navBrand}>
-            <Sparkles className={styles.navLogo} />
-            <span className={styles.navTitle}>CalmChat AI</span>
-          </div>
-          <div className={styles.navLinks}>
-            <Link to="/" className={styles.navLink}>
-              <ArrowLeft className={styles.navIcon} />
-              Home
-            </Link>
-            {messages.length > 0 && (
-              <button onClick={handleNewChat} className={styles.newChatButton}>
-                <RefreshCw className={styles.newChatIcon} />
-                New Chat
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
-
-      <div className={styles.chatArea} style={{ position: 'relative', zIndex: 100 }}>
-        <div className={styles.messagesContainer}>
-          {messages.length === 0 ? (
-            <div className={styles.emptyState}>
-              <MessageCircle className={styles.emptyIcon} />
-              <h2 className={styles.emptyTitle}>Start a Conversation</h2>
-              <p className={styles.emptyDescription}>
-                Share what's on your mind. I'm here to listen and provide support in a safe, judgment-free space.
-              </p>
-            </div>
-          ) : (
-            <>
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`${styles.message} ${message.role === "user" ? styles.messageUser : ""}`}
-                >
-                  <div
-                    className={`${styles.messageAvatar} ${message.role === "user" ? styles.avatarUser : styles.avatarAi}`}
-                  >
-                    {message.role === "user" ? (
-                      <User className={styles.avatarIcon} />
-                    ) : (
-                      <Sparkles className={styles.avatarIcon} />
-                    )}
-                  </div>
-                  <div
-                    className={`${styles.messageBubble} ${message.role === "user" ? styles.bubbleUser : styles.bubbleAi}`}
-                  >
-                    {message.content}
-                  </div>
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </>
-          )}
-        </div>
-
-        <div className={styles.inputArea}>
-          <div className={styles.inputWrapper}>
-            <textarea
-              ref={textareaRef}
-              className={styles.input}
-              value={inputValue + (isListening ? interimTranscript : "")}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={isListening ? "Listening..." : "Type your message here..."}
-              rows={1}
-              disabled={isProcessing}
-            />
-            {isSpeechSupported && (
-              <button
-                onClick={toggleVoiceInput}
-                className={`${styles.voiceButton} ${isListening ? styles.voiceButtonActive : ""}`}
-                disabled={isProcessing}
-                title={isListening ? "Stop recording" : "Start voice input"}
-              >
-                {isListening ? (
-                  <MicOff className={styles.voiceIcon} />
-                ) : (
-                  <Mic className={styles.voiceIcon} />
-                )}
-              </button>
-            )}
-          </div>
-          <button
-            onClick={handleSendMessage}
-            className={styles.sendButton}
-            disabled={!inputValue.trim() || isProcessing}
-          >
-            <Send className={styles.sendIcon} />
-            Send
+    <div className={styles.container}>
+      {/* Sidebar */}
+      <aside className={styles.sidebar}>
+        <div className={styles.sidebarHeader}>
+          <Link to="/" className={styles.sidebarBrand}>
+            <Sparkles className={styles.brandIcon} />
+            <span className={styles.brandTitle}>CalmChat</span>
+          </Link>
+          <button onClick={handleNewChat} className={styles.newChatBtn}>
+            <Plus className={styles.newChatIcon} />
+            <span>New Chat</span>
           </button>
         </div>
-      </div>
+      </aside>
+
+      {/* Main Chat Area */}
+      <main className={styles.main}>
+        {/* Header */}
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <Link to="/" className={styles.backLink}>
+              <ArrowLeft className={styles.backIcon} />
+            </Link>
+            <div className={styles.headerTitle}>
+              <Sparkles className={styles.titleIcon} />
+              <span>CalmChat AI</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Messages Area */}
+        <div className={styles.messagesWrapper}>
+          <div className={styles.messagesContainer}>
+            {messages.length === 0 ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>
+                  <Sparkles />
+                </div>
+                <h2 className={styles.emptyTitle}>How can I help you today?</h2>
+                <p className={styles.emptyDescription}>
+                  I'm your AI companion for mental well-being support. Feel free to share what's on your mind.
+                </p>
+              </div>
+            ) : (
+              <>
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`${styles.messageRow} ${message.role === "user" ? styles.messageRowUser : styles.messageRowAi}`}
+                  >
+                    <div className={styles.messageContent}>
+                      <div className={styles.messageAvatar}>
+                        {message.role === "user" ? (
+                          <User className={styles.avatarIcon} />
+                        ) : (
+                          <Sparkles className={styles.avatarIcon} />
+                        )}
+                      </div>
+                      <div className={styles.messageText}>
+                        <div className={styles.messageLabel}>
+                          {message.role === "user" ? "You" : "CalmChat"}
+                        </div>
+                        <div className={styles.messageBody}>{message.content}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Input Area */}
+        <div className={styles.inputSection}>
+          <div className={styles.inputContainer}>
+            <div className={styles.inputWrapper}>
+              <textarea
+                ref={textareaRef}
+                className={styles.input}
+                value={inputValue + (isListening ? interimTranscript : "")}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={isListening ? "Listening..." : "Message CalmChat..."}
+                rows={1}
+                disabled={isProcessing}
+              />
+              <div className={styles.inputActions}>
+                {isSpeechSupported && (
+                  <button
+                    onClick={toggleVoiceInput}
+                    className={`${styles.actionButton} ${isListening ? styles.actionButtonActive : ""}`}
+                    disabled={isProcessing}
+                    title={isListening ? "Stop recording" : "Start voice input"}
+                  >
+                    {isListening ? (
+                      <MicOff className={styles.actionIcon} />
+                    ) : (
+                      <Mic className={styles.actionIcon} />
+                    )}
+                  </button>
+                )}
+                <button
+                  onClick={handleSendMessage}
+                  className={`${styles.sendButton} ${!inputValue.trim() || isProcessing ? styles.sendButtonDisabled : ""}`}
+                  disabled={!inputValue.trim() || isProcessing}
+                  title="Send message"
+                >
+                  <Send className={styles.sendIcon} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
