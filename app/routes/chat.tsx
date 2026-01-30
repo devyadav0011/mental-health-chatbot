@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router";
 import type { Route } from "./+types/chat";
-import { ArrowLeft, MessageCircle, Send, Sparkles, User, RefreshCw } from "lucide-react";
+import { ArrowLeft, MessageCircle, Send, Sparkles, User, RefreshCw, Mic, MicOff } from "lucide-react";
 import { generateAIResponse } from "~/data/mock-ai-responses";
+import { useSpeechRecognition } from "~/hooks/use-speech-recognition";
 import styles from "./chat.module.css";
 
 const backgroundImages = [
@@ -39,6 +40,26 @@ export default function Chat() {
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Speech recognition hook
+  const {
+    isListening,
+    transcript,
+    interimTranscript,
+    isSupported: isSpeechSupported,
+    startListening,
+    stopListening,
+    resetTranscript,
+  } = useSpeechRecognition({
+    continuous: false,
+    interimResults: true,
+    onResult: (result) => {
+      setInputValue((prev) => prev + result + " ");
+    },
+    onError: (error) => {
+      console.error("Voice input error:", error);
+    },
+  });
 
   // Generate a random background image on component mount
   const backgroundImage = useMemo(() => {
@@ -91,7 +112,24 @@ export default function Chat() {
   const handleNewChat = () => {
     setMessages([]);
     setInputValue("");
+    resetTranscript();
   };
+
+  const toggleVoiceInput = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      resetTranscript();
+      startListening();
+    }
+  };
+
+  // Update input value with interim transcript
+  useEffect(() => {
+    if (interimTranscript && isListening) {
+      textareaRef.current?.focus();
+    }
+  }, [interimTranscript, isListening]);
 
   return (
     <div className={styles.container} style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -156,16 +194,32 @@ export default function Chat() {
         </div>
 
         <div className={styles.inputArea}>
-          <textarea
-            ref={textareaRef}
-            className={styles.input}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message here..."
-            rows={1}
-            disabled={isProcessing}
-          />
+          <div className={styles.inputWrapper}>
+            <textarea
+              ref={textareaRef}
+              className={styles.input}
+              value={inputValue + (isListening ? interimTranscript : "")}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={isListening ? "Listening..." : "Type your message here..."}
+              rows={1}
+              disabled={isProcessing}
+            />
+            {isSpeechSupported && (
+              <button
+                onClick={toggleVoiceInput}
+                className={`${styles.voiceButton} ${isListening ? styles.voiceButtonActive : ""}`}
+                disabled={isProcessing}
+                title={isListening ? "Stop recording" : "Start voice input"}
+              >
+                {isListening ? (
+                  <MicOff className={styles.voiceIcon} />
+                ) : (
+                  <Mic className={styles.voiceIcon} />
+                )}
+              </button>
+            )}
+          </div>
           <button
             onClick={handleSendMessage}
             className={styles.sendButton}

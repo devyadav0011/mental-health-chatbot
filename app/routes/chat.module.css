@@ -308,6 +308,13 @@
   backdrop-filter: blur(10px);
 }
 
+.inputWrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 @media (prefers-color-scheme: dark) {
   .inputArea {
     background: rgba(24, 24, 27, 0.95);
@@ -330,6 +337,7 @@
   line-height: 1.5;
   min-height: 24px;
   max-height: 120px;
+  padding-right: var(--space-8);
 }
 
 .input::placeholder {
@@ -369,6 +377,63 @@
 .sendIcon {
   width: 18px;
   height: 18px;
+}
+
+.voiceButton {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: var(--space-2);
+  background: var(--color-neutral-3);
+  border: 1px solid var(--color-neutral-6);
+  border-radius: var(--radius-2);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voiceButton:hover:not(:disabled) {
+  background: var(--color-neutral-4);
+  border-color: var(--color-accent-8);
+}
+
+.voiceButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.voiceButtonActive {
+  background: var(--color-error-4);
+  border-color: var(--color-error-9);
+  animation: voicePulse 1.5s infinite;
+}
+
+.voiceButtonActive:hover {
+  background: var(--color-error-5);
+}
+
+@keyframes voicePulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+}
+
+.voiceIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-neutral-11);
+}
+
+.voiceButtonActive .voiceIcon {
+  color: var(--color-error-11);
 }
 
 @media (max-width: 768px) {
