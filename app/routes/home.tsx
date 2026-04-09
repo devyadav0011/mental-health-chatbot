@@ -13,7 +13,6 @@ export function meta({}: Route.MetaArgs) {
     },
   ];
 }
-
 export default function Home() {
   return (
     <div className={styles.container}>
