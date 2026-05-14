@@ -20,24 +20,6 @@ A modern, production-ready template for building full-stack React applications u
 
 ## Getting Started
 
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
 ## Deployment
 
 ### DIY Deployment
