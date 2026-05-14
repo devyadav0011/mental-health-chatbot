@@ -20,14 +20,6 @@ A modern, production-ready template for building full-stack React applications u
 
 ## Getting Started
 
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
 ### Development
 
 Start the development server with HMR:
